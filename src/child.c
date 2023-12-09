@@ -22,7 +22,7 @@ int main(int argc, char* argv[]){
     strcpy(semaphor_pr_name, argv[3]);
 
     int mmap_f_d = shm_open(mmap_file_name, O_RDWR | O_CREAT, 0777);
-    ftruncate(mmap_f_d, MAX_SIZE);//?????
+    ftruncate(mmap_f_d, MAX_SIZE);
     char* mmap_f_pointer = mmap(NULL, MAX_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mmap_f_d, 0);
 
     sem_t* semaphor = sem_open(semaphor_name, 0);
@@ -32,11 +32,16 @@ int main(int argc, char* argv[]){
     char vowels[] = {'a', 'e', 'i', 'o', 'u', 'y'};
     char string[MAX_SIZE];
     while(1){
-
+        // printf("Жду\n");
         sem_wait(semaphor);
+        // printf("Дождался\n");
 
-        strcpy(string, mmap_f_pointer);
+        for (int i = 0; i < strlen(mmap_f_pointer); ++i) {
+            string[i] = mmap_f_pointer[i];
+        }
         string[ strlen(mmap_f_pointer) ] = 0;
+
+        // printf("Длина пениса %lu\n", strlen(string));
 
         sem_post(semaphor_pr);
 
